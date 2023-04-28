@@ -169,39 +169,62 @@ public class ApiApp extends Application {
         try {
             double random = Math.floor(Math.random() * CITIES.size());
             String randomCity = CITIES.get(0);
-            String uri1 = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="
-                + randomCity + "&key=AIzaSyBQQ90g4GhcqJ5gFrsXIZiBVWRbq82QSHI"
-                + "&inputtype=textquery&fields=name,photos";
+            String uri1 = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input="
+                + randomCity + "&types=(cities)&key=" + "AIzaSyBQQ90g4GhcqJ5gFrsXIZiBVWRbq82QSHI";
 
             HttpRequest request1 = HttpRequest.newBuilder().uri(URI.create(uri1)).build();
-            HttpResponse<String> response = HTTP_CLIENT.send(request1, BodyHandlers.ofString());
-            String json1 = response.body();
+            HttpResponse<String> response1 = HTTP_CLIENT.send(request1, BodyHandlers.ofString());
+            String json1 = response1.body();
 
-            if (response.statusCode() != 200) {
-                throw new IOException(response.toString());
+            if (response1.statusCode() != 200) {
+                throw new IOException(response1.toString());
             } // if
 
             System.out.println(json1);
 
-            PlaceSearchResponse placeSearchResponse = GSON.fromJson(
-                json1, PlaceSearchResponse.class);
+            AutocompleteResponse autocompleteResponse = GSON.fromJson(
+                json1, AutocompleteResponse.class);
 
-            PlaceSearchResult result = placeSearchResponse.candidates[0].photos[0];
-            System.out.println(result);
-            String photoReference = result.photo_reference;
+            AutocompleteResult result1 = autocompleteResponse.predictions[0];
+            String placeid = result1.place_id;
 
-            System.out.println(photoReference);
-
-
-            String uri2 = "https://maps.googleapis.com/maps/api/place/photo?photoreference="
-                + photoReference + "&key=AIzaSyBQQ90g4GhcqJ5gFrsXIZiBVWRbq82QSHI"
-                + "&maxwidth=400&maxheight=400";
-
+            String uri2 = "https://maps.googleapis.com/maps/api/place/details/json?place_id="
+                + placeid + "&fields=photo&key=AIzaSyBQQ90g4GhcqJ5gFrsXIZiBVWRbq82QSHI";
             HttpRequest request2 = HttpRequest.newBuilder().uri(URI.create(uri2)).build();
             HttpResponse<String> response2 = HTTP_CLIENT.send(request2, BodyHandlers.ofString());
             String json2 = response2.body();
-            System.out.println(json2);
 
+            if (response2.statusCode() != 200) {
+                throw new IOException(response2.toString());
+            } // if
+
+            PlaceDetailsResponse placeDetailsResponse = GSON.fromJson(
+                json2, PlaceDetailsResponse.class);
+
+            Random rand = new Random();
+            int n = rand.nextInt(10);
+
+            PlaceDetailsResult result2 = placeDetailsResponse.result.photos[n];
+            String photoReference = result2.photo_reference;
+
+            String uri3 = "https://maps.googleapis.com/maps/api/place/photo?photoreference="
+                + photoReference + "&key=AIzaSyBQQ90g4GhcqJ5gFrsXIZiBVWRbq82QSHI"
+                + "&maxwidth=400&maxheight=400";
+
+            HttpRequest request3 = HttpRequest.newBuilder().uri(URI.create(uri3)).build();
+            HttpResponse<InputStream> response3 = HTTP_CLIENT.send
+                (request3, BodyHandlers.ofInputStream());
+
+            if (response3.statusCode() != 200) {
+                throw new IOException(response3.toString());
+            } // if
+
+            String url = response3.toString();
+            String trimmedUrl = url.substring(5, url.length() - 5);
+            System.out.println(trimmedUrl);
+            Image image = new Image(trimmedUrl);
+
+            imageView.setImage(image);
 
         } catch (IOException | InterruptedException e) {
             alertError(e);
