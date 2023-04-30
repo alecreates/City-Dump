@@ -48,8 +48,10 @@ public class ApiApp extends Application {
     Stage stage;
     Scene startScene;
     Scene gameScene;
+    Scene endScene;
     VBox root;
     HBox newScene;
+    VBox end;
     VBox image;
     ImageView imageView;
     VBox answers;
@@ -59,6 +61,7 @@ public class ApiApp extends Application {
     Image skylineImage;
     Label pressStart;
     Label cityDump;
+    Label roundNumber;
     Button answer1;
     Button answer2;
     Button answer3;
@@ -67,6 +70,9 @@ public class ApiApp extends Application {
     String rightAnswer;
     int roundCounter;
     int scoreCounter;
+    Label yourScore;
+    Label quote;
+    Button startOver;
 
     private static final List<String> CITIES = Arrays.asList(
         "Tokyo, Japan", "Delhi", "Shanghai",
@@ -120,9 +126,11 @@ public class ApiApp extends Application {
         background = new Background(array);
         pressStart = new Label("Press START to play");
         cityDump = new Label("City Dump");
+        roundNumber = new Label();
         newScene = new HBox(20);
         image = new VBox();
         answers = new VBox(20);
+        end = new VBox(20);
         imageView = new ImageView();
         answer1 = new Button();
         answer2 = new Button();
@@ -130,29 +138,32 @@ public class ApiApp extends Application {
         answer4 = new Button();
         whichCityIsThis = new Label("Match the photo to a city below");
         gameScene = new Scene(newScene, 728, 364);
+        endScene = new Scene(end, 728, 364);
         rightAnswer = "";
         roundCounter = 0;
         scoreCounter = 0;
+        yourScore = new Label();
+        quote = new Label("not bad.");
+        startOver = new Button("PLAY AGAIN");
     } // ApiApp
-
 
     public void init() {
         //Start scene
         root.setBackground(background);
         root.getChildren().addAll(cityDump, pressStart, start);
         root.setAlignment(Pos.CENTER);
-
         //game scene
+        answers.getChildren().addAll(whichCityIsThis, answer1, answer2, answer3, answer4);
+        image.getChildren().addAll(roundNumber, imageView);
+        newScene.getChildren().addAll(image, answers);
+        newScene.setBackground(background);
         newScene.setAlignment(Pos.CENTER);
         image.setAlignment(Pos.CENTER);
         answers.setAlignment(Pos.CENTER);
-
-        image.getChildren().add(imageView);
-        imageView.setFitWidth(300);
+        roundNumber.setAlignment(Pos.TOP_LEFT);
+        imageView.setFitWidth(250);
+        imageView.setFitHeight(300);
         imageView.setPreserveRatio(true);
-
-        answers.getChildren().addAll(whichCityIsThis, answer1, answer2, answer3, answer4);
-
         VBox.setVgrow(answer1, Priority.ALWAYS);
         VBox.setVgrow(answer2, Priority.ALWAYS);
         VBox.setVgrow(answer3, Priority.ALWAYS);
@@ -167,17 +178,24 @@ public class ApiApp extends Application {
         answer2.setMaxHeight(50);
         answer3.setMaxHeight(50);
         answer4.setMaxHeight(50);
-
-        newScene.getChildren().addAll(image, answers);
-        newScene.setBackground(background);
-
+        //end scene
+        end.setBackground(background);
+        end.setAlignment(Pos.CENTER);
+        end.getChildren().addAll(yourScore, quote, startOver);
+        //button functionalities
         start.setOnAction(e -> this.handleStart());
         answer1.setOnAction(e -> this.handleAnswer1());
         answer2.setOnAction(e -> this.handleAnswer2());
         answer3.setOnAction(e -> this.handleAnswer3());
         answer4.setOnAction(e -> this.handleAnswer4());
+        startOver.setOnAction(e -> this.handleStartOver());
     } // init
 
+    public void handleStartOver() {
+        roundCounter = 0;
+        scoreCounter = 0;
+        handleStart();
+    } // handleStartOver
 
     public void handleAnswer1() {
         if (answer1.getText().equals(rightAnswer)) {
@@ -186,8 +204,8 @@ public class ApiApp extends Application {
         if (roundCounter < 10) {
             handleStart();
         } else {
-            System.out.println("move to end scene");
-            // new end scene
+            yourScore.setText("SCORE: " + scoreCounter + "/10");
+            stage.setScene(endScene);
         } // if
     } // handleAnswer1
 
@@ -198,8 +216,8 @@ public class ApiApp extends Application {
         if (roundCounter < 10) {
             handleStart();
         } else {
-            System.out.println("move to end scene");
-            // new end scene
+            yourScore.setText("SCORE: " + scoreCounter + "/10");
+            stage.setScene(endScene);
         } // if
     } // handleAnswer2
 
@@ -210,8 +228,8 @@ public class ApiApp extends Application {
         if (roundCounter < 10) {
             handleStart();
         } else {
-            System.out.println("move to end scene");
-            // new end scene
+            yourScore.setText("SCORE: " + scoreCounter + "/10");
+            stage.setScene(endScene);
         } // if
     } // handleAnswer3
 
@@ -222,12 +240,10 @@ public class ApiApp extends Application {
         if (roundCounter < 10) {
             handleStart();
         } else {
-            System.out.println("move to end scene");
-            // new end scene
+            yourScore.setText("SCORE: " + scoreCounter + "/10");
+            stage.setScene(endScene);
         } // if
     } // handleAnswer4
-
-
 
     private void setAnswers() {
         Random rand = new Random();
@@ -291,7 +307,6 @@ public class ApiApp extends Application {
             if (response1.statusCode() != 200) {
                 throw new IOException(response1.toString());
             } // if
-            System.out.println(json1);
             AutocompleteResponse autocompleteResponse = GSON.fromJson(
                 json1, AutocompleteResponse.class);
             AutocompleteResult result1 = autocompleteResponse.predictions[0];
@@ -320,18 +335,16 @@ public class ApiApp extends Application {
                 throw new IOException(response3.toString());
             } // if
             String url = response3.toString();
+            System.out.println(url);
             String trimmedUrl = url.substring(5, url.length() - 5);
-            System.out.println(trimmedUrl);
             Image image = new Image(trimmedUrl);
             imageView.setImage(image);
             roundCounter++;
+            roundNumber.setText(roundCounter + "/10");
 
         } catch (IOException | InterruptedException e) {
             alertError(e);
         } // try
-
-
-
 
     } // handleStart
 
