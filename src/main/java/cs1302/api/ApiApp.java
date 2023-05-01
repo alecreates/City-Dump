@@ -30,9 +30,9 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +50,8 @@ public class ApiApp extends Application {
     Scene gameScene;
     Scene endScene;
     VBox root;
+    VBox rootOfGameScene;
+    HBox round;
     HBox newScene;
     VBox end;
     VBox image;
@@ -73,32 +75,39 @@ public class ApiApp extends Application {
     Label yourScore;
     Label quote;
     Button startOver;
+    Button next;
 
     private static final List<String> CITIES = Arrays.asList(
-        "Tokyo, Japan", "Delhi", "Shanghai",
-        "San Francisco", "London",
-        "Sao Paulo", "Mexico City",
-        "Cairo", "Mumbai",
-        "Beijing", "Dhaka", "Osaka",
-        "New York", "Karachi", "Buenos Aires",
-        "Chongqing", "Istanbul", "Kolkata",
-        "Manila", "Lagos", "Rio de Janeiro",
-        "Tianjin", "Kinshasa", "Guangzhou",
-        "Moscow", "Shenzhen", "Lahore", "Bangalore",
-        "Paris", "Bogota", "Jakarta",
-        "Lima", "Bangkok", "Seoul", "Nagoya",
-        "Tehran", "Chicago", "Ho Chi Minh City",
-        "Luanda", "Kuala Lumpur", "Hong Kong",
-        "Riyadh", "Baghdad", "Santiago", "Surat",
-        "Madrid", "Houston", "Dallas", "Toronto",
-        "Dar es Salaam", "Miami", "Belo Horizonte",
-        "Singapore", "Philadelphia", "Atlanta",
-        "Fukuoka", "Khartuom", "Barcelona",
-        "Johannesburg", "Saint Petersburg",
-        "Qingdao", "Washington D.C.", "Alexandria",
-        "Guadalajara"
+        "Tokyo, Japan", "Delhi, India", "Shanghai, China",
+        "San Francisco, California, USA", "London, UK",
+        "Sao Paulo, Brazil", "Mexico City, Mexico",
+        "Cairo, Egypt", "Mumbai, India",
+        "Beijing, China", "Dhaka, Bangladesh", "Osaka, Japan",
+        "New York, USA", "Karachi, Pakistan", "Buenos Aires, Argentina",
+        "Chongqing, China", "Istanbul, Turkey", "Kolkata, India",
+        "Manila, Philippines", "Lagos, Nigeria", "Rio de Janeiro, Brazil",
+        "Tianjin, China", "Kinshasa, DR of Congo", "Bucharest, Romania",
+        "Moscow, Russia", "Lahore, Pakistan",
+        "Paris, France", "Bogota, Colombia", "Jakarta, Indonesia",
+        "Lima, Peru", "Bangkok, Thailand", "Seoul, South Korea",
+        "Tehran, Iran", "Chicago, USA", "Ho Chi Minh City, Vietnam",
+        "Luanda, Angola", "Kuala Lumpur, Malaysia", "Hong Kong, China",
+        "Riyadh, Saudi Arabia", "Baghdad, Iraq", "Santiago, Chile", "Surat, India",
+        "Madrid, Spain", "Houston, Texas, USA", "Dallas, Texas, USA", "Toronto, Canada",
+        "Dar es Salaam, Tanzania", "Miami, Florida, USA", "Belo Horizonte, Brazil",
+        "Singapore", "Philadelphia, Pennsylvania, USA", "Atlanta, Georgia, USA",
+        "Fukuoka, Japan", "Khartuom, Sudan", "Barcelona, Spain",
+        "Johannesburg, South Africa", "Saint Petersburg, Russia",
+        "Washington D.C., USA", "Los Angeles, California, USA",
+        "Guadalajara, Mexico", "Cordoba, Argentina", "Dubai",
+        "San Diego, California, USA", "Phoenix, Arizona, USA", "Budapest, Hungary",
+        "Berlin, Germany", "Rome, Italy", "Florence, Italy", "Vienna, Austria",
+        "Amsterdam, Netherlands", "Stockholm, Sweden", "Lisbon, Portugal",
+        "Athens, Greece", "Athens, Georgia", "Munich, Germany", "Brussels, Belgium",
+        "Dublin, Ireland", "Oslo, Norway", "Milan, Italy", "Warsaw, Poland",
+        "Kyiv, Ukraine", "Copenhagen, Denmark", "Ontario, Canada", "Sydney, Australia",
+        "Melbourne, Australia", "Brisbane, Australia", "Medellin, Colombia"
         );
-
 
     private static final String BACKGROUND_IMG = "file:resources/skyline.jpg";
 
@@ -126,7 +135,6 @@ public class ApiApp extends Application {
         background = new Background(array);
         pressStart = new Label("Press START to play");
         cityDump = new Label("City Dump");
-        roundNumber = new Label();
         newScene = new HBox(20);
         image = new VBox();
         answers = new VBox(20);
@@ -137,14 +145,18 @@ public class ApiApp extends Application {
         answer3 = new Button();
         answer4 = new Button();
         whichCityIsThis = new Label("Match the photo to a city below");
-        gameScene = new Scene(newScene, 728, 364);
+        rootOfGameScene = new VBox(20);
+        round = new HBox(20);
+        gameScene = new Scene(rootOfGameScene, 728, 364);
         endScene = new Scene(end, 728, 364);
         rightAnswer = "";
         roundCounter = 0;
         scoreCounter = 0;
         yourScore = new Label();
-        quote = new Label("not bad.");
+        quote = new Label();
         startOver = new Button("PLAY AGAIN");
+        roundNumber = new Label();
+        next = new Button("NEXT");
     } // ApiApp
 
     public void init() {
@@ -154,15 +166,17 @@ public class ApiApp extends Application {
         root.setAlignment(Pos.CENTER);
         //game scene
         answers.getChildren().addAll(whichCityIsThis, answer1, answer2, answer3, answer4);
-        image.getChildren().addAll(roundNumber, imageView);
+        image.getChildren().addAll(imageView);
         newScene.getChildren().addAll(image, answers);
-        newScene.setBackground(background);
+        round.getChildren().add(roundNumber);
+        rootOfGameScene.getChildren().addAll(round, newScene, next);
+        rootOfGameScene.setBackground(background);
         newScene.setAlignment(Pos.CENTER);
         image.setAlignment(Pos.CENTER);
         answers.setAlignment(Pos.CENTER);
         roundNumber.setAlignment(Pos.TOP_LEFT);
-        imageView.setFitWidth(250);
-        imageView.setFitHeight(300);
+        imageView.setFitWidth(300);
+        imageView.setFitHeight(200);
         imageView.setPreserveRatio(true);
         VBox.setVgrow(answer1, Priority.ALWAYS);
         VBox.setVgrow(answer2, Priority.ALWAYS);
@@ -170,14 +184,14 @@ public class ApiApp extends Application {
         VBox.setVgrow(answer4, Priority.ALWAYS);
         HBox.setHgrow(image, Priority.ALWAYS);
         HBox.setHgrow(answers, Priority.ALWAYS);
-        answer1.setMaxWidth(300);
-        answer2.setMaxWidth(300);
-        answer3.setMaxWidth(300);
-        answer4.setMaxWidth(300);
-        answer1.setMaxHeight(50);
-        answer2.setMaxHeight(50);
-        answer3.setMaxHeight(50);
-        answer4.setMaxHeight(50);
+        answer1.setPrefWidth(300);
+        answer2.setPrefWidth(300);
+        answer3.setPrefWidth(300);
+        answer4.setPrefWidth(300);
+        answer1.setPrefHeight(50);
+        answer2.setPrefHeight(50);
+        answer3.setPrefHeight(50);
+        answer4.setPrefHeight(50);
         //end scene
         end.setBackground(background);
         end.setAlignment(Pos.CENTER);
@@ -189,7 +203,24 @@ public class ApiApp extends Application {
         answer3.setOnAction(e -> this.handleAnswer3());
         answer4.setOnAction(e -> this.handleAnswer4());
         startOver.setOnAction(e -> this.handleStartOver());
+        next.setOnAction(e -> this.handleNext());
     } // init
+
+    public void handleNext() {
+        if (roundCounter == 10) {
+            yourScore.setText("Score: " + scoreCounter + "/10");
+            if (scoreCounter < 4) {
+                quote.setText("hmm... your geography needs some work. Keep practicing!");
+            } else if (scoreCounter > 3 && scoreCounter < 7) {
+                quote.setText("Not bad!");
+            } else {
+                quote.setText("Impressive! You know your places.");
+            } // if
+            stage.setScene(endScene);
+        } else {
+            handleStart();
+        } // if
+    } // handleNext
 
     public void handleStartOver() {
         roundCounter = 0;
@@ -198,54 +229,63 @@ public class ApiApp extends Application {
     } // handleStartOver
 
     public void handleAnswer1() {
+        changeColors();
         if (answer1.getText().equals(rightAnswer)) {
             scoreCounter++;
         } // if
-        if (roundCounter < 10) {
-            handleStart();
-        } else {
-            yourScore.setText("SCORE: " + scoreCounter + "/10");
-            stage.setScene(endScene);
-        } // if
+        next.setDisable(false);
     } // handleAnswer1
 
     public void handleAnswer2() {
+        changeColors();
         if (answer2.getText().equals(rightAnswer)) {
             scoreCounter++;
         } // if
-        if (roundCounter < 10) {
-            handleStart();
-        } else {
-            yourScore.setText("SCORE: " + scoreCounter + "/10");
-            stage.setScene(endScene);
-        } // if
+        next.setDisable(false);
     } // handleAnswer2
 
     public void handleAnswer3() {
+        changeColors();
         if (answer3.getText().equals(rightAnswer)) {
             scoreCounter++;
         } // if
-        if (roundCounter < 10) {
-            handleStart();
-        } else {
-            yourScore.setText("SCORE: " + scoreCounter + "/10");
-            stage.setScene(endScene);
-        } // if
+        next.setDisable(false);
     } // handleAnswer3
 
     public void handleAnswer4() {
+        changeColors();
         if (answer4.getText().equals(rightAnswer)) {
             scoreCounter++;
         } // if
-        if (roundCounter < 10) {
-            handleStart();
-        } else {
-            yourScore.setText("SCORE: " + scoreCounter + "/10");
-            stage.setScene(endScene);
-        } // if
+        next.setDisable(false);
     } // handleAnswer4
 
+    private void changeColors() {
+        if (answer1.getText().equals(rightAnswer)) {
+            answer1.setTextFill(Color.GREEN);
+        } else {
+            answer1.setTextFill(Color.RED);
+        } // if
+        if (answer2.getText().equals(rightAnswer)) {
+            answer2.setTextFill(Color.GREEN);
+        } else {
+            answer2.setTextFill(Color.RED);
+        } // if
+        if (answer3.getText().equals(rightAnswer)) {
+            answer3.setTextFill(Color.GREEN);
+        } else {
+            answer3.setTextFill(Color.RED);
+        } // if
+        if (answer4.getText().equals(rightAnswer)) {
+            answer4.setTextFill(Color.GREEN);
+        } else {
+            answer4.setTextFill(Color.RED);
+        } // if
+
+    } // changeColors
+
     private void setAnswers() {
+        next.setDisable(true);
         Random rand = new Random();
         String wrongAnswer1 = CITIES.get(rand.nextInt(CITIES.size()));
         String wrongAnswer2 = CITIES.get(rand.nextInt(CITIES.size()));
@@ -292,6 +332,10 @@ public class ApiApp extends Application {
 
     public void handleStart() {
         stage.setScene(gameScene);
+        answer1.setTextFill(Color.BLACK);
+        answer2.setTextFill(Color.BLACK);
+        answer3.setTextFill(Color.BLACK);
+        answer4.setTextFill(Color.BLACK);
         try {
             double random = Math.floor(Math.random() * CITIES.size());
             String randomCity = CITIES.get((int)random);
@@ -322,12 +366,12 @@ public class ApiApp extends Application {
             PlaceDetailsResponse placeDetailsResponse = GSON.fromJson(
                 json2, PlaceDetailsResponse.class);
             Random rand = new Random();
-            int n = rand.nextInt(10);
+            int n = rand.nextInt(placeDetailsResponse.result.photos.length);
             PlaceDetailsResult result2 = placeDetailsResponse.result.photos[n];
             String photoReference = result2.photo_reference;
             String uri3 = "https://maps.googleapis.com/maps/api/place/photo?photoreference="
                 + photoReference + "&key=AIzaSyBQQ90g4GhcqJ5gFrsXIZiBVWRbq82QSHI"
-                + "&maxwidth=300&maxheight=300";
+                + "&maxwidth=300&maxheight=200";
             HttpRequest request3 = HttpRequest.newBuilder().uri(URI.create(uri3)).build();
             HttpResponse<InputStream> response3 = HTTP_CLIENT.send
                 (request3, BodyHandlers.ofInputStream());
@@ -335,13 +379,11 @@ public class ApiApp extends Application {
                 throw new IOException(response3.toString());
             } // if
             String url = response3.toString();
-            System.out.println(url);
             String trimmedUrl = url.substring(5, url.length() - 5);
             Image image = new Image(trimmedUrl);
             imageView.setImage(image);
             roundCounter++;
             roundNumber.setText(roundCounter + "/10");
-
         } catch (IOException | InterruptedException e) {
             alertError(e);
         } // try
@@ -351,12 +393,10 @@ public class ApiApp extends Application {
     /** {@inheritDoc} */
     @Override
     public void start(Stage stage) {
-
         VBox vbox = new VBox();
         this.stage = stage;
         // setup scene
         startScene = new Scene(root, 728, 364);
-
         // setup stage
         stage.setTitle("ApiApp!");
         stage.setScene(startScene);
