@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 
 import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
@@ -31,6 +32,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -42,7 +44,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 /**
- * REPLACE WITH NON-SHOUTING DESCRIPTION OF YOUR APP.
+ * City photo guesser game that displays a random city photo from one of the
+ * cities in the list to which the user has to match to an answer displayed.
  */
 public class ApiApp extends Application {
     Stage stage;
@@ -76,6 +79,8 @@ public class ApiApp extends Application {
     Label quote;
     Button startOver;
     Button next;
+    HBox nextHBox;
+    Label description;
 
     private static final List<String> CITIES = Arrays.asList(
         "Tokyo, Japan", "Delhi, India", "Shanghai, China",
@@ -106,7 +111,7 @@ public class ApiApp extends Application {
         "Athens, Greece", "Athens, Georgia", "Munich, Germany", "Brussels, Belgium",
         "Dublin, Ireland", "Oslo, Norway", "Milan, Italy", "Warsaw, Poland",
         "Kyiv, Ukraine", "Copenhagen, Denmark", "Ontario, Canada", "Sydney, Australia",
-        "Melbourne, Australia", "Brisbane, Australia", "Medellin, Colombia"
+        "Melbourne, Australia", "Brisbane, Australia", "Medellin, Colombia", "Nairobi, Kenya"
         );
 
     private static final String BACKGROUND_IMG = "file:resources/skyline.jpg";
@@ -156,25 +161,39 @@ public class ApiApp extends Application {
         quote = new Label();
         startOver = new Button("PLAY AGAIN");
         roundNumber = new Label();
+        nextHBox = new HBox(20);
         next = new Button("NEXT");
+        description = new Label("Random city photo guesser");
     } // ApiApp
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void init() {
         //Start scene
         root.setBackground(background);
-        root.getChildren().addAll(cityDump, pressStart, start);
+        cityDump.setFont(new Font("Open Sans Extrabold", 75));
+        pressStart.setFont(new Font("Open Sans Semibold", 16));
+        description.setFont(new Font("Open Sans Semibold", 24));
+        root.getChildren().addAll(cityDump, description, pressStart, start);
         root.setAlignment(Pos.CENTER);
+        start.setFont(new Font("Monospaced", 15));
         //game scene
         answers.getChildren().addAll(whichCityIsThis, answer1, answer2, answer3, answer4);
         image.getChildren().addAll(imageView);
         newScene.getChildren().addAll(image, answers);
+        nextHBox.getChildren().add(next);
         round.getChildren().add(roundNumber);
-        rootOfGameScene.getChildren().addAll(round, newScene, next);
+        rootOfGameScene.getChildren().addAll(round, newScene, nextHBox);
         rootOfGameScene.setBackground(background);
         newScene.setAlignment(Pos.CENTER);
         image.setAlignment(Pos.CENTER);
         answers.setAlignment(Pos.CENTER);
-        roundNumber.setAlignment(Pos.TOP_LEFT);
+        nextHBox.setAlignment(Pos.CENTER_LEFT);
+        round.setAlignment(Pos.CENTER);
+        nextHBox.setPadding(new Insets(0, 0, 20, 20));
+        roundNumber.setPadding(new Insets(20, 0, 0, 0));
         imageView.setFitWidth(300);
         imageView.setFitHeight(200);
         imageView.setPreserveRatio(true);
@@ -196,7 +215,16 @@ public class ApiApp extends Application {
         end.setBackground(background);
         end.setAlignment(Pos.CENTER);
         end.getChildren().addAll(yourScore, quote, startOver);
-        //button functionalities
+        yourScore.setFont(new Font("Open Sans Extrabold", 24));
+        quote.setFont(new Font("Open Sans Semibold", 16));
+        startOver.setFont(new Font("Monospaced", 15));
+        setAllButtonFunctionalities();
+    } // init
+
+    /**
+     * Sets the functionalities for all the buttons in the game.
+     */
+    public void setAllButtonFunctionalities() {
         start.setOnAction(e -> this.handleStart());
         answer1.setOnAction(e -> this.handleAnswer1());
         answer2.setOnAction(e -> this.handleAnswer2());
@@ -204,8 +232,11 @@ public class ApiApp extends Application {
         answer4.setOnAction(e -> this.handleAnswer4());
         startOver.setOnAction(e -> this.handleStartOver());
         next.setOnAction(e -> this.handleNext());
-    } // init
+    } // setAllButtonFunctionalities
 
+    /**
+     * Button handler for the next button on the game screen.
+     */
     public void handleNext() {
         if (roundCounter == 10) {
             yourScore.setText("Score: " + scoreCounter + "/10");
@@ -222,12 +253,18 @@ public class ApiApp extends Application {
         } // if
     } // handleNext
 
+    /**
+     * Button handler for the start over button.
+     */
     public void handleStartOver() {
         roundCounter = 0;
         scoreCounter = 0;
         handleStart();
     } // handleStartOver
 
+    /**
+     * Button handler for the first answer choice.
+     */
     public void handleAnswer1() {
         changeColors();
         if (answer1.getText().equals(rightAnswer)) {
@@ -236,6 +273,9 @@ public class ApiApp extends Application {
         next.setDisable(false);
     } // handleAnswer1
 
+    /**
+     * Button handler for the second answer choice.
+     */
     public void handleAnswer2() {
         changeColors();
         if (answer2.getText().equals(rightAnswer)) {
@@ -244,6 +284,9 @@ public class ApiApp extends Application {
         next.setDisable(false);
     } // handleAnswer2
 
+    /**
+     * Button handler for the third answer choice.
+     */
     public void handleAnswer3() {
         changeColors();
         if (answer3.getText().equals(rightAnswer)) {
@@ -252,6 +295,9 @@ public class ApiApp extends Application {
         next.setDisable(false);
     } // handleAnswer3
 
+    /**
+     * Button handler for the fourth answer choice.
+     */
     public void handleAnswer4() {
         changeColors();
         if (answer4.getText().equals(rightAnswer)) {
@@ -260,6 +306,10 @@ public class ApiApp extends Application {
         next.setDisable(false);
     } // handleAnswer4
 
+    /**
+     * Changes the colors of the answer choice texts after an answer
+     * is clicked.
+     */
     private void changeColors() {
         if (answer1.getText().equals(rightAnswer)) {
             answer1.setTextFill(Color.GREEN);
@@ -284,16 +334,18 @@ public class ApiApp extends Application {
 
     } // changeColors
 
+    /**
+     * Sets the answer choices and ensures that all are unique, and that none of the
+     * wrong answers are set to the right answer's city name.
+     */
     private void setAnswers() {
         next.setDisable(true);
         Random rand = new Random();
         String wrongAnswer1 = CITIES.get(rand.nextInt(CITIES.size()));
         String wrongAnswer2 = CITIES.get(rand.nextInt(CITIES.size()));
         String wrongAnswer3 = CITIES.get(rand.nextInt(CITIES.size()));
-
         // ensures none of the other answer choices are the same / none of them
         // equal the right answer.
-
         while (wrongAnswer1.equals(rightAnswer) || wrongAnswer1.equals(wrongAnswer2) ||
         wrongAnswer1.equals(wrongAnswer3)) {
             wrongAnswer1 = CITIES.get(rand.nextInt(CITIES.size()));
@@ -330,6 +382,10 @@ public class ApiApp extends Application {
         } // if
     }
 
+    /**
+     * Handles the start button, makes the HTTP requests and is responsible
+     * for every photo change.
+     */
     public void handleStart() {
         stage.setScene(gameScene);
         answer1.setTextFill(Color.BLACK);
@@ -354,7 +410,7 @@ public class ApiApp extends Application {
             AutocompleteResponse autocompleteResponse = GSON.fromJson(
                 json1, AutocompleteResponse.class);
             AutocompleteResult result1 = autocompleteResponse.predictions[0];
-            String placeid = result1.place_id;
+            String placeid = result1.placeId;
             String uri2 = "https://maps.googleapis.com/maps/api/place/details/json?place_id="
                 + placeid + "&fields=photo&key=AIzaSyBQQ90g4GhcqJ5gFrsXIZiBVWRbq82QSHI";
             HttpRequest request2 = HttpRequest.newBuilder().uri(URI.create(uri2)).build();
@@ -368,9 +424,9 @@ public class ApiApp extends Application {
             Random rand = new Random();
             int n = rand.nextInt(placeDetailsResponse.result.photos.length);
             PlaceDetailsResult result2 = placeDetailsResponse.result.photos[n];
-            String photoReference = result2.photo_reference;
+            String reference = result2.photoReference;
             String uri3 = "https://maps.googleapis.com/maps/api/place/photo?photoreference="
-                + photoReference + "&key=AIzaSyBQQ90g4GhcqJ5gFrsXIZiBVWRbq82QSHI"
+                + reference + "&key=AIzaSyBQQ90g4GhcqJ5gFrsXIZiBVWRbq82QSHI"
                 + "&maxwidth=300&maxheight=200";
             HttpRequest request3 = HttpRequest.newBuilder().uri(URI.create(uri3)).build();
             HttpResponse<InputStream> response3 = HTTP_CLIENT.send
@@ -403,9 +459,12 @@ public class ApiApp extends Application {
         stage.setOnCloseRequest(event -> Platform.exit());
         stage.sizeToScene();
         stage.show();
-
     } // start
 
+    /**
+     * Show a modal error alert based on {@code cause}.
+     * @param cause a Throwable.
+     */
     public static void alertError(Throwable cause) {
         TextArea text = new TextArea(cause.toString());
         Alert alert = new Alert(AlertType.ERROR);
