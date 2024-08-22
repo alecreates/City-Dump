@@ -1,0 +1,120 @@
+cs1302-api:
+total 64
+-rw-r--r--. 1 myid  6658 Apr 23 17:45 APPENDIX_API.rst
+-rw-r--r--. 1 myid  4205 Apr 23 17:45 APPENDIX_GIT.rst
+drwxr-xr-x. 2 myid    33 May  2 16:31 meta
+-rw-r--r--. 1 myid  8370 Apr 23 17:45 pom.xml
+-rwxr-xr-x. 1 myid   105 Apr 23 17:45 prepare-merge.sh
+-rw-r--r--. 1 myid 26078 Apr 23 17:45 README.rst
+-rw-r--r--. 1 myid     0 May  2 16:36 rec782
+drwxr-xr-x. 2 myid   121 Apr 25 11:53 resources
+-rwxr-xr-x. 1 myid   119 Apr 23 17:45 run.sh
+drwxr-xr-x. 4 myid    42 Apr 23 17:45 src
+drwxr-xr-x. 5 myid   104 May  2 15:59 target
+
+cs1302-api/meta:
+total 4
+-rw-r--r--. 1 myid 2647 May  2 16:31 DEADLINE.md
+
+cs1302-api/resources:
+total 2092
+-rw-r--r--. 1 myid      42 Apr 24 17:49 config.properties
+-rw-r--r--. 1 myid  582183 Apr 23 17:45 readme-banner.png
+-rw-r--r--. 1 myid 1540930 Apr 23 17:45 readme-newrepo.png
+-rw-r--r--. 1 myid    7659 Apr 25 11:53 skyline.jpg
+
+cs1302-api/src:
+total 0
+drwxr-xr-x. 3 myid 26 Apr 23 17:45 main
+drwxr-xr-x. 3 myid 50 Apr 23 17:45 site
+
+cs1302-api/src/main:
+total 0
+drwxr-xr-x. 3 myid 56 Apr 23 17:45 java
+
+cs1302-api/src/main/java:
+total 4
+drwxr-xr-x. 3 myid  25 Apr 23 17:45 cs1302
+-rw-r--r--. 1 myid 373 Apr 23 17:45 module-info.java
+
+cs1302-api/src/main/java/cs1302:
+total 0
+drwxr-xr-x. 2 myid 274 May  2 15:59 api
+
+cs1302-api/src/main/java/cs1302/api:
+total 52
+-rw-r--r--. 1 myid 18019 May  2 15:59 ApiApp.java
+-rw-r--r--. 1 myid  1285 Apr 23 17:45 ApiDriver.java
+-rw-r--r--. 1 myid   287 May  1 14:59 AutocompleteResponse.java
+-rw-r--r--. 1 myid   269 May  1 14:57 AutocompleteResult.java
+-rw-r--r--. 1 myid  4332 Apr 23 17:45 OpenLibrarySearchApi.java
+-rw-r--r--. 1 myid   254 May  1 15:00 PlaceDetailsResponse.java
+-rw-r--r--. 1 myid   356 May  1 15:01 PlaceDetailsResult.java
+-rw-r--r--. 1 myid  1670 Apr 23 17:45 PropertiesExample.java
+
+cs1302-api/src/site:
+total 4
+drwxr-xr-x. 2 myid  25 Apr 23 17:45 markdown
+-rw-r--r--. 1 myid 424 Apr 23 17:45 site.xml
+
+cs1302-api/src/site/markdown:
+total 4
+-rw-r--r--. 1 myid 133 Apr 23 17:45 index.md.vm
+
+cs1302-api/target:
+total 4
+drwxr-xr-x. 3 myid  168 May  2 15:59 classes
+drwxr-xr-x. 3 myid   25 May  2 15:59 generated-sources
+drwxr-xr-x. 3 myid   43 May  2 15:59 maven-status
+-rw-r--r--. 1 myid 1269 May  2 15:59 modulepath
+
+cs1302-api/target/classes:
+total 2096
+-rw-r--r--. 1 myid      42 May  2 15:59 config.properties
+drwxr-xr-x. 3 myid      25 May  2 15:59 cs1302
+-rw-r--r--. 1 myid     354 May  2 15:59 module-info.class
+-rw-r--r--. 1 myid  582183 May  2 15:59 readme-banner.png
+-rw-r--r--. 1 myid 1540930 May  2 15:59 readme-newrepo.png
+-rw-r--r--. 1 myid    7659 May  2 15:59 skyline.jpg
+
+cs1302-api/target/classes/cs1302:
+total 4
+drwxr-xr-x. 2 myid 4096 May  2 15:59 api
+
+cs1302-api/target/classes/cs1302/api:
+total 60
+-rw-r--r--. 1 myid 19066 May  2 15:59 ApiApp.class
+-rw-r--r--. 1 myid  1503 May  2 15:59 ApiDriver.class
+-rw-r--r--. 1 myid   364 May  2 15:59 AutocompleteResponse.class
+-rw-r--r--. 1 myid   451 May  2 15:59 AutocompleteResult.class
+-rw-r--r--. 1 myid  5993 May  2 15:59 OpenLibrarySearchApi.class
+-rw-r--r--. 1 myid   493 May  2 15:59 OpenLibrarySearchApi$OpenLibraryDoc.class
+-rw-r--r--. 1 myid   617 May  2 15:59 OpenLibrarySearchApi$OpenLibraryResult.class
+-rw-r--r--. 1 myid   358 May  2 15:59 PlaceDetailsResponse.class
+-rw-r--r--. 1 myid   517 May  2 15:59 PlaceDetailsResult.class
+-rw-r--r--. 1 myid  1680 May  2 15:59 PropertiesExample.class
+
+cs1302-api/target/generated-sources:
+total 0
+drwxr-xr-x. 2 myid 10 May  2 15:59 annotations
+
+cs1302-api/target/generated-sources/annotations:
+total 0
+
+cs1302-api/target/maven-status:
+total 0
+drwxr-xr-x. 3 myid 29 May  2 15:59 maven-compiler-plugin
+
+cs1302-api/target/maven-status/maven-compiler-plugin:
+total 0
+drwxr-xr-x. 3 myid 37 May  2 15:59 compile
+
+cs1302-api/target/maven-status/maven-compiler-plugin/compile:
+total 0
+drwxr-xr-x. 2 myid 64 May  2 15:59 default-compile
+
+cs1302-api/target/maven-status/maven-compiler-plugin/compile/default-compile:
+total 8
+-rw-r--r--. 1 myid 399 May  2 15:59 createdFiles.lst
+-rw-r--r--. 1 myid 686 May  2 15:59 inputFiles.lst
+/home/myid/agt79496/cs1302-api:/home/myid/csci-1302
